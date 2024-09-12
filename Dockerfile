@@ -11,8 +11,8 @@ FROM base AS runtime
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["python", "/app/src/main.py"]
-
 FROM base AS test
 
-CMD ["pytest", "/app/src/tests"]
+RUN ["pytest", "/app/src/tests"]
+
+CMD ["python", "/app/src/main.py"]

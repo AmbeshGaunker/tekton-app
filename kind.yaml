@@ -1,0 +1,26 @@
+# kind create cluster --config kind.yml --name tekton
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+    - |
+      kind: InitConfiguration
+      nodeRegistration:
+        kubeletExtraArgs:
+          node-labels: "ingress-ready=true"
+    extraPortMappings:
+      - containerPort: 8080
+        hostPort: 8080
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 8081
+        protocol: TCP
+      - containerPort: 30007
+        hostPort: 30007
+      - containerPort: 9097
+        hostPort: 9097
+  - role: worker
+    extraPortMappings:
+      - containerPort: 30007
+        hostPort: 30008

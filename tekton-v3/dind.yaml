@@ -1,0 +1,42 @@
+# apiVersion: tekton.dev/v1beta1
+# kind: Task
+# metadata:
+#   name: deploy-locally
+# spec:
+#   params:
+#     - name: IMAGE
+#       description: Name (reference) of the image to build.
+#   steps:
+#     - name: run-image-locally
+#       image: docker:latest
+#       script: |
+#         #!/bin/sh
+#         echo "Running Docker container with image: $(params.IMAGE)"
+#         docker run --rm $(params.IMAGE)
+
+# apiVersion: tekton.dev/v1beta1
+# kind: Task
+# metadata:
+#   name: deploy-locally
+# spec:
+#   workspaces:
+#     - name: source
+#   steps:
+#     - name: update-ip
+#       image: index.docker.io/ambesh123/tekton:latest
+
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy-locally
+spec:
+  workspaces:
+    - name: source
+      description: The git repo
+  steps:
+    - name: update-yaml
+      image: ambesh123/tekton:latest
+
+
+
+

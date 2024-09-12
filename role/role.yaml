@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: testsa
+  namespace: default
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: testadminrole
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "services", "nodes", "namespaces", "events", "endpoints", "persistentvolumes", "persistentvolumeclaims", "configmaps", "secrets", "serviceaccounts", "replicationcontrollers", "deployments", "statefulsets", "daemonsets", "jobs", "cronjobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets", "daemonsets", "replicasets", "jobs", "cronjobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+  - apiGroups: ["extensions"]
+    resources: ["deployments", "ingresses", "networkpolicies", "replicasets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: testadminrolebinding
+subjects:
+  - kind: ServiceAccount
+    name: testsa
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: testadminrole
+  apiGroup: rbac.authorization.k8s.io

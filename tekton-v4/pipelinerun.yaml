@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: build-and-deploy-run
+spec:
+  pipelineRef:
+    name: build-and-deploy
+  params:
+    - name: contextDir
+      value: "."
+    - name: namespace
+      value: "tekton-tutorial"
+  resources:
+    - name: appSource
+      resourceRef:
+        name: tekton-tutorial-git
+    - name: appImage
+      resourceRef:
+        name: tekton-tutorial-image

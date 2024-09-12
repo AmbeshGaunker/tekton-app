@@ -1,0 +1,44 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tutorial-pipeline
+spec:
+  workspaces:
+    - name: myworkspace
+  tasks:
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: myworkspace
+      params:
+        - name: url
+          value: https://github.com/AmbeshGaunker/tekton-app
+        - name: deleteExisting
+          value: "true"
+    # - name: build
+    #   taskRef:
+    #     name: buildah
+    #   runAfter:
+    #     - fetch-repository
+    #   params:
+    #     - name: IMAGE
+    #       value: docker.io/ambesh123/tekton
+    #     - name: IMAGE_PUSH_SECRET_NAME
+    #       value: image-push-secrets
+    #   workspaces:
+    #     - name: source
+    #       workspace: myworkspace
+    - name: deploy-locally
+      taskRef:
+        name: deploy-locally
+      params:
+        - name: IMAGE
+          value: ambesh123/tekton
+      # runAfter:
+      #   - build
+      workspaces:
+        - name: source
+          workspace: myworkspace
+

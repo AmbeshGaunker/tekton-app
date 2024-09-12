@@ -1,0 +1,36 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: github-template
+spec:
+  params:
+    - name: gitrevision
+      description: The git revision
+      default: main
+    - name: gitrepositoryurl
+      description: The git repository url
+    - name: gitrepositoryname
+      description: The repository name
+    - name: repository
+      description: The repository full name
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: github-run-
+        labels:
+          tekton.dev/pipeline: build-and-deploy
+      spec:
+        pipelineRef:
+          name: tutorial-pipeline
+        workspaces:
+          - name: myworkspace
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 50Mi
+
