@@ -1,0 +1,30 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: github-pipeline-template
+spec:
+  params:
+    - name: action
+    - name: pull_request_id
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: pullrequest-pipeline-run-
+      spec:
+        pipelineRef:
+          name: testcase-pipeline
+        params:
+          - name: action
+            value: "$(tt.params.action)"
+          - name: pull_request_id
+            value: "$(tt.params.pull_request_id)"
+        workspaces:
+          - name: myworkspace
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 50Mi

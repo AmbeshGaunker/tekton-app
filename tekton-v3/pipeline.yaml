@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: tutorial-pipeline
+  name: testcase-pipeline
 spec:
   workspaces:
     - name: myworkspace
@@ -36,8 +36,8 @@ spec:
       params:
         - name: IMAGE
           value: ambesh123/tekton
-      # runAfter:
-      #   - build
+      runAfter:
+        - fetch-repository
       workspaces:
         - name: source
           workspace: myworkspace

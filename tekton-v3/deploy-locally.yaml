@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy-locally
+spec:
+  workspaces:
+    - name: source
+      description: The git repo
+  steps:
+    - name: update-yaml
+      image: ambesh123/tekton:latest
+
+
+
+

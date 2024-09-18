@@ -1,10 +1,10 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: tutorial-pipeline
+  name: testcase-pipelinerun
 spec:
   pipelineRef:
-    name: tutorial-pipeline
+    name: testcase-pipeline
   workspaces:
     - name: myworkspace
       volumeClaimTemplate:

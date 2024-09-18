@@ -1,0 +1,10 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: github-payload-binding
+spec:
+  params:
+    - name: action
+      value: "$(body.action)"
+    - name: pull_request_id
+      value: "$(body.pull_request.id)"
