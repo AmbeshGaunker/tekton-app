@@ -5,6 +5,13 @@ metadata:
 spec:
   pipelineRef:
     name: testcase-pipeline
+  params:
+    - name: git-url
+      value: https://github.com/AmbeshGaunker/tekton-app
+    - name: docker-image
+      value: docker.io/ambesh123/tekton
+    - name: branch                
+      value: "main"   
   workspaces:
     - name: myworkspace
       volumeClaimTemplate:
@@ -14,4 +21,3 @@ spec:
           resources:
             requests:
               storage: 50Mi
- 

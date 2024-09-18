@@ -8,3 +8,5 @@ spec:
       value: "$(body.action)"
     - name: pull_request_id
       value: "$(body.pull_request.id)"
+    - name: branch              
+      value: "$(body.pull_request.head.ref)"   

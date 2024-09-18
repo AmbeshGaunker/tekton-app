@@ -6,6 +6,9 @@ spec:
   params:
     - name: action
     - name: pull_request_id
+    - name: git-url
+    - name: docker-image
+    - name: branch    
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -19,6 +22,12 @@ spec:
             value: "$(tt.params.action)"
           - name: pull_request_id
             value: "$(tt.params.pull_request_id)"
+          - name: git-url
+            value: "https://github.com/AmbeshGaunker/tekton-app"
+          - name: docker-image
+            value: "docker.io/ambesh123/tekton"
+          - name: branch 
+            value: "$(tt.params.branch)"
         workspaces:
           - name: myworkspace
             volumeClaimTemplate:
