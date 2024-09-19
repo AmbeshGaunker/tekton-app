@@ -29,27 +29,27 @@ spec:
           value: "true"
         - name: revision             
           value: "$(params.branch)"
-    # - name: build
-    #   taskRef:
-    #     name: buildah
-    #   runAfter:
-    #     - fetch-repository
-    #   params:
-    #     - name: IMAGE
-    #       value: "$(params.docker-image)"
-    #     - name: IMAGE_PUSH_SECRET_NAME
-    #       value: image-push-secrets
-    #   workspaces:
-    #     - name: source
-    #       workspace: myworkspace
-    - name: deploy-locally
+    - name: build
       taskRef:
-        name: deploy-locally
-      params:
-        - name: IMAGE
-          value: "$(params.docker-image)"
+        name: buildah
       runAfter:
         - fetch-repository
+      params:
+        - name: IMAGE
+          value: docker.io/ambesh123/tekton
+        - name: IMAGE_PUSH_SECRET_NAME
+          value: image-push-secrets
       workspaces:
         - name: source
           workspace: myworkspace
+    # - name: deploy-locally
+    #   taskRef:
+    #     name: deploy-locally
+    #   params:
+    #     - name: IMAGE
+    #       value: "$(params.docker-image)"
+    #   runAfter:
+    #     - build
+    #   workspaces:
+    #     - name: source
+    #       workspace: myworkspace
