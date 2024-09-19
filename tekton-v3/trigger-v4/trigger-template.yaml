@@ -9,6 +9,7 @@ spec:
     - name: git-url
     - name: docker-image
     - name: branch    
+    - name: sha    
   resourcetemplates:
     - apiVersion: tekton.dev/v1beta1
       kind: PipelineRun
@@ -28,6 +29,8 @@ spec:
             value: "docker.io/ambesh123/tekton"
           - name: branch 
             value: "$(tt.params.branch)"
+          - name: sha      
+            value: "$(tt.params.sha)"
         workspaces:
           - name: myworkspace
             volumeClaimTemplate:

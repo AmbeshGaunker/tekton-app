@@ -24,31 +24,31 @@
 
 
 
-apiVersion: tekton.dev/v1beta1
-kind: PipelineRun
-metadata:
-  name: testcase-pipelinerun
-spec:
-  pipelineRef:
-    name: testcase-pipeline
-  params:
-    - name: git-url
-      value: https://github.com/AmbeshGaunker/tekton-app
-    - name: docker-image
-      # value: docker.io/ambesh123/tekton
-      value: localhost:44499/tekton-app
-    - name: branch                
-      value: "main"  
-    - name: dockerfile
-      value: Dockerfile
-    - name: image
-      value: localhost:44499/tekton-app
-  workspaces:
-    - name: myworkspace
-      volumeClaimTemplate:
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 50Mi
+# apiVersion: tekton.dev/v1beta1
+# kind: PipelineRun
+# metadata:
+#   name: testcase-pipelinerun
+# spec:
+#   pipelineRef:
+#     name: testcase-pipeline
+#   params:
+#     - name: git-url
+#       value: https://github.com/AmbeshGaunker/tekton-app
+#     - name: docker-image
+#       # value: docker.io/ambesh123/tekton
+#       value: localhost:44499/tekton-app
+#     - name: branch                
+#       value: "main"  
+#     - name: dockerfile
+#       value: Dockerfile
+#     - name: image
+#       value: localhost:44499/tekton-app
+#   workspaces:
+#     - name: myworkspace
+#       volumeClaimTemplate:
+#         spec:
+#           accessModes:
+#             - ReadWriteOnce
+#           resources:
+#             requests:
+#               storage: 50Mi

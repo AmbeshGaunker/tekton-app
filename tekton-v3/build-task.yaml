@@ -16,41 +16,33 @@ spec:
       description: Kubernetes secrets contain image push username and password
   workspaces:
     - name: source
+  volumes:
+    - name: varlibcontainers
+      emptyDir: {}
+    - name: build-cache
+      emptyDir: {} 
   steps:
     - name: build
       image: quay.io/buildah/stable:v1
       workingDir: $(workspaces.source.path)
       script: |
+        set -e
         buildah --storage-driver=$(params.STORAGE_DRIVER) bud \
-          --no-cache -f $(params.DOCKERFILE) -t $(params.IMAGE) .
+          --no-cache \
+          --build-arg BUILDAH_CACHE_PATH=/cache \
+          -f $(params.DOCKERFILE) -t $(params.IMAGE) .
+        if [ $? -eq 0 ]; then
+          echo "Build succeeded" > $(results.status.path)
+        else
+          echo "Build failed" > $(results.status.path)
+        fi
       volumeMounts:
         - name: varlibcontainers
           mountPath: /var/lib/containers
+        - name: build-cache
+          mountPath: /cache
       securityContext:
         privileged: true
-  #   - name: push
-  #     image: quay.io/buildah/stable:v1
-  #     workingDir: $(workspaces.source.path)
-  #     script: |
-  #       buildah --storage-driver=$(params.STORAGE_DRIVER) push \
-  #         --creds ${USERNAME}:${PASSWORD} $(params.IMAGE)
-  #     volumeMounts:
-  #       - name: varlibcontainers
-  #         mountPath: /var/lib/containers
-  #     securityContext:
-  #       privileged: true
-  #     env:
-  #       - name: USERNAME
-  #         valueFrom:
-  #           secretKeyRef:
-  #             name: $(params.IMAGE_PUSH_SECRET_NAME)
-  #             key: username
-  #       - name: PASSWORD
-  #         valueFrom:
-  #           secretKeyRef:
-  #             name: $(params.IMAGE_PUSH_SECRET_NAME)
-  #             key: password
-  volumes:
-    - name: varlibcontainers
-      emptyDir: {}
-
+  results:
+    - name: status
+      description: The result of the build

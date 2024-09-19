@@ -10,15 +10,34 @@ spec:
     - name: docker-image
       type: string
       description: The Docker image name
-    - name: branch                   
+    - name: branch
       type: string
       description: The branch to checkout
+    - name: sha
+      type: string
+      description: The commit SHA for GitHub status updates
   workspaces:
     - name: myworkspace
   tasks:
+    - name: set-status-start
+      taskRef:
+        name: github-set-status
+      params:
+        - name: REPO_FULL_NAME
+          value: "AmbeshGaunker/tekton-app"
+        - name: SHA
+          value: "$(params.sha)"
+        - name: DESCRIPTION
+          value: "Build has started"
+        - name: STATE
+          value: pending
+        - name: TARGET_URL
+          value: http://localhost:9097/#/namespaces/default/pipelineruns/$(context.pipelineRun.name)
     - name: fetch-repository
       taskRef:
         name: git-clone
+      runAfter:
+        - set-status-start
       workspaces:
         - name: output
           workspace: myworkspace
@@ -27,7 +46,7 @@ spec:
           value: "$(params.git-url)"
         - name: deleteExisting
           value: "true"
-        - name: revision             
+        - name: revision
           value: "$(params.branch)"
     - name: build
       taskRef:
@@ -36,20 +55,46 @@ spec:
         - fetch-repository
       params:
         - name: IMAGE
-          value: docker.io/ambesh123/tekton
+          value: $(params.docker-image)
         - name: IMAGE_PUSH_SECRET_NAME
           value: image-push-secrets
       workspaces:
         - name: source
           workspace: myworkspace
-    # - name: deploy-locally
-    #   taskRef:
-    #     name: deploy-locally
-    #   params:
-    #     - name: IMAGE
-    #       value: "$(params.docker-image)"
-    #   runAfter:
-    #     - build
-    #   workspaces:
-    #     - name: source
-    #       workspace: myworkspace
+  finally:
+    - name: set-status-success
+      when:
+        - input: $(tasks.build.status)
+          operator: in
+          values: ["Succeeded"]
+      taskRef:
+        name: github-set-status
+      params:
+        - name: REPO_FULL_NAME
+          value: "AmbeshGaunker/tekton-app"
+        - name: SHA
+          value: "$(params.sha)"
+        - name: DESCRIPTION
+          value: "Build has succeeded"
+        - name: STATE
+          value: success
+        - name: TARGET_URL
+          value: http://localhost:9097/#/namespaces/default/pipelineruns/$(context.pipelineRun.name)
+    - name: set-status-failure
+      when:
+        - input: $(tasks.build.status)
+          operator: in
+          values: ["Failed"]
+      taskRef:
+        name: github-set-status
+      params:
+        - name: REPO_FULL_NAME
+          value: "AmbeshGaunker/tekton-app"
+        - name: SHA
+          value: "$(params.sha)"
+        - name: DESCRIPTION
+          value: "Build has failed"
+        - name: STATE
+          value: failure
+        - name: TARGET_URL
+          value: http://localhost:9097/#/namespaces/default/pipelineruns/$(context.pipelineRun.name)
